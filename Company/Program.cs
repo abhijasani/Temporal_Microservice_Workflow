@@ -13,6 +13,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<EmployeeService>();
+builder.Services.AddSingleton<WebApiService>();
+builder.Services.AddSingleton<EmployeeActivities>();
 
 var app = builder.Build();
 
