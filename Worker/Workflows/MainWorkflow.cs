@@ -6,38 +6,45 @@ namespace Worker.Workflows;
 [Workflow]
 public class MainWorkflow
 {
-    // private readonly EmployeeActivities _employeeActivities;
-
     public MainWorkflow()
     {
-        // _employeeActivities = new EmployeeActivities();
     }
 
     [WorkflowRun]
-    public async Task<Guid> VerifyEmployee(Guid governmentDirectoryId)
+    public async Task<string> VerifyEmployee(Guid governmentDirectoryId)
     {
         var retryPolicy = new RetryPolicy
         {
             InitialInterval = TimeSpan.FromSeconds(1),
-            MaximumInterval = TimeSpan.FromSeconds(100),
+            MaximumInterval = TimeSpan.FromSeconds(20),
             BackoffCoefficient = 2,
             MaximumAttempts = 500,
         };
 
-        try
+        Guid ssnResult;
+
+        ssnResult = await Workflow.ExecuteActivityAsync(
+            (EmployeeActivities employeeActivities)
+            => employeeActivities.GetSocialSecurityNumber(governmentDirectoryId),
+            new ActivityOptions { StartToCloseTimeout = TimeSpan.FromMinutes(5), RetryPolicy = retryPolicy }
+        );
+
+        if (ssnResult == Guid.Empty)
         {
-            var result = await Workflow.ExecuteActivityAsync(
-                (EmployeeActivities employeeActivities)
-                => employeeActivities.GetSocialSecurityNumber(governmentDirectoryId),
-                new ActivityOptions { StartToCloseTimeout = TimeSpan.FromMinutes(5), RetryPolicy = retryPolicy }
-            );
-            return result;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.Message);
-            return Guid.Empty;
+            return "SSN not found in GovtDirectory";
         }
 
+        var checkResult = await Workflow.ExecuteActivityAsync(
+            (EmployeeActivities employeeActivities)
+            => employeeActivities.StartBackgroundCheck(ssnResult),
+            new ActivityOptions { StartToCloseTimeout = TimeSpan.FromMinutes(5), RetryPolicy = retryPolicy }
+        );
+
+        if(checkResult == string.Empty)
+        {
+            return "SSN not found in BackgroundCheck";
+        }
+
+        return checkResult;
     }
 }

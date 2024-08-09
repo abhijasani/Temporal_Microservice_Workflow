@@ -19,8 +19,8 @@ public class EmployeeActivities
     }
 
     [Activity]
-    public Guid DummyActivity()
+    public async Task<string> StartBackgroundCheck(Guid SocialSecurityNumber)
     {
-        return Guid.NewGuid();
+        return await _webApiService.StartBackgroundCheck(SocialSecurityNumber);
     }
 }

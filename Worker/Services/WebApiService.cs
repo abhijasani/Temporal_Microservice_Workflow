@@ -15,9 +15,7 @@ public class WebApiService
 
     public async Task<Guid> GetSSN(Guid governmentDirectoryId)
     {
-        _httpClient.BaseAddress = new Uri(GovernmentDirectoryServiceUrl);
-
-        string endpoint = $"api/EmployeeInformation?GovernmentDirectoryId={governmentDirectoryId}";
+        string endpoint = $"{GovernmentDirectoryServiceUrl}/api/EmployeeInformation?GovernmentDirectoryId={governmentDirectoryId}";
         HttpResponseMessage response = await _httpClient.GetAsync(endpoint);
 
         if (response.IsSuccessStatusCode)
@@ -42,6 +40,23 @@ public class WebApiService
         {
             Console.WriteLine($"Request failed with status code: {response.StatusCode}");
             return Guid.Empty;
+        }
+    }
+
+    public async Task<string> StartBackgroundCheck(Guid SSN)
+    {
+        string endpoint = $"{BackgroundCheckServiceUrl}/api/BackgroundCheck?SocialSecurityNumber={SSN}";
+        HttpResponseMessage response = await _httpClient.GetAsync(endpoint);
+
+        if (response.IsSuccessStatusCode)
+        {
+            string responseString = await response.Content.ReadAsStringAsync();
+            return responseString;
+        }
+        else
+        {
+            Console.WriteLine($"Request failed with status code: {response.StatusCode}");
+            return string.Empty;
         }
     }
 }
