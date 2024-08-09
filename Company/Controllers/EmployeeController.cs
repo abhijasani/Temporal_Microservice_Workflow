@@ -20,7 +20,7 @@ namespace Company.Controllers
             }
 
             var employeeID = _employeeService.AddEmployee(employeeDTO, governmentDirectoryId);
-            return CreatedAtAction(nameof(GetEmployeeById), new { id = employeeID }, employeeDTO);
+            return CreatedAtAction(nameof(GetGovernmentEmployeeIdByEmployeeId), new { id = employeeID }, employeeDTO);
         }
 
         // Read
@@ -32,14 +32,14 @@ namespace Company.Controllers
         }
 
         [HttpGet("{id:guid}")]
-        public IActionResult GetEmployeeById(Guid id)
+        public IActionResult GetGovernmentEmployeeIdByEmployeeId(Guid id)
         {
             var employee = _employeeService.GetEmployeeById(id);
             if (employee == null)
             {
                 return NotFound();
             }
-            return Ok(employee);
+            return Ok(employee.GovernmentDirectoryId);
         }
 
         // Update
