@@ -88,4 +88,84 @@ public class WebApiService
             return string.Empty;
         }
     }
+
+    public async Task<bool> GetTrafficViolation(Guid SSN)
+    {
+        string endpoint = $"{BackgroundCheckServiceUrl}/api/BackgroundCheck/GetTrafficViolation?SocialSecurityNumber={SSN}";
+        HttpResponseMessage response = await _httpClient.GetAsync(endpoint);
+
+        if (response.IsSuccessStatusCode)
+        {
+            string responseString = await response.Content.ReadAsStringAsync();
+
+            if (bool.TryParse(responseString, out bool result))
+            {
+                return result;
+            }
+            else
+            {
+                Console.WriteLine("Unexpected response content");
+                throw new Exception("Response is not bool");
+            }
+        }
+        else
+        {
+            Console.WriteLine($"Request failed with status code: {response.StatusCode}");
+            throw new Exception($"Request failed with status code: {response.StatusCode}");
+        }
+    }
+
+    public async Task<bool> GetCivilOffence(Guid SSN)
+    {
+        string endpoint = $"{BackgroundCheckServiceUrl}/api/BackgroundCheck/GetCivilOffence?SocialSecurityNumber={SSN}";
+        HttpResponseMessage response = await _httpClient.GetAsync(endpoint);
+
+        if (response.IsSuccessStatusCode)
+        {
+            string responseString = await response.Content.ReadAsStringAsync();
+
+            if (bool.TryParse(responseString, out bool result))
+            {
+                return result;
+            }
+            else
+            {
+                Console.WriteLine("Unexpected response content");
+                throw new Exception("Response is not bool");
+            }
+        }
+        else
+        {
+            Console.WriteLine($"Request failed with status code: {response.StatusCode}");
+            throw new Exception($"Request failed with status code: {response.StatusCode}");
+        }
+    }
+
+    public async Task<bool> GetCriminalRecord(Guid SSN)
+    {
+        string endpoint = $"{BackgroundCheckServiceUrl}/api/BackgroundCheck/GetCriminalRecord?SocialSecurityNumber={SSN}";
+        HttpResponseMessage response = await _httpClient.GetAsync(endpoint);
+
+        if (response.IsSuccessStatusCode)
+        {
+            string responseString = await response.Content.ReadAsStringAsync();
+
+            if (bool.TryParse(responseString, out bool result))
+            {
+                return result;
+            }
+            else
+            {
+                Console.WriteLine("Unexpected response content");
+                throw new Exception("Response is not bool");
+            }
+        }
+        else
+        {
+            Console.WriteLine($"Request failed with status code: {response.StatusCode}");
+            throw new Exception($"Request failed with status code: {response.StatusCode}");
+        }
+    }
+
+
 }

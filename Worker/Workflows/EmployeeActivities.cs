@@ -29,4 +29,23 @@ public class EmployeeActivities
     {
         return await _webApiService.StartBackgroundCheck(SocialSecurityNumber);
     }
+    
+    [Activity]
+    public async Task<bool> GetTrafficViolation(Guid SocialSecurityNumber)
+    {
+        return await _webApiService.GetTrafficViolation(SocialSecurityNumber);
+    }
+
+    [Activity]
+    public async Task<bool> GetCivilOffence(Guid SocialSecurityNumber)
+    {
+        return await _webApiService.GetCivilOffence(SocialSecurityNumber);
+    }
+
+    [Activity]
+    public async Task<bool> GetCriminalRecord(Guid SocialSecurityNumber)
+    {
+        return await _webApiService.GetCriminalRecord(SocialSecurityNumber);
+    }
+
 }

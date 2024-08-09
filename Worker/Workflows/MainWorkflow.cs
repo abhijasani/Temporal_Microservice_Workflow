@@ -20,7 +20,7 @@ public class MainWorkflow
             BackoffCoefficient = 2,
             MaximumAttempts = 500,
         };
-        
+
         Guid govtIdResult;
 
         govtIdResult = await Workflow.ExecuteActivityAsync(
@@ -47,17 +47,36 @@ public class MainWorkflow
             return "SSN not found in GovtDirectory";
         }
 
-        var checkResult = await Workflow.ExecuteActivityAsync(
-            (EmployeeActivities employeeActivities)
-            => employeeActivities.StartBackgroundCheck(ssnResult),
-            new ActivityOptions { StartToCloseTimeout = TimeSpan.FromMinutes(5), RetryPolicy = retryPolicy }
+        // var checkResult = await Workflow.ExecuteActivityAsync(
+        //     (EmployeeActivities employeeActivities)
+        //     => employeeActivities.StartBackgroundCheck(ssnResult),
+        //     new ActivityOptions { StartToCloseTimeout = TimeSpan.FromMinutes(5), RetryPolicy = retryPolicy }
+        // );
+
+        // if(checkResult == string.Empty)
+        // {
+        //     return "SSN not found in BackgroundCheck";
+        // }
+
+        // return checkResult;
+
+        var trafficViolationResult = Workflow.ExecuteChildWorkflowAsync(
+        (TrafficViolationWorkflow w) => w.GetTrafficViolation(ssnResult),
+            new ChildWorkflowOptions { Id = $"{nameof(TrafficViolationWorkflow)}-{ssnResult}" }
         );
 
-        if(checkResult == string.Empty)
-        {
-            return "SSN not found in BackgroundCheck";
-        }
+        var civilOffenceResult = Workflow.ExecuteChildWorkflowAsync(
+        (CivilOffenceWorkflow w) => w.GetCivilOffence(ssnResult),
+            new ChildWorkflowOptions { Id = $"{nameof(CivilOffenceWorkflow)}-{ssnResult}" }
+        );
 
-        return checkResult;
+        var criminalRecordResult = Workflow.ExecuteChildWorkflowAsync(
+        (CriminalRecordWorkflow w) => w.GetCriminalRecord(ssnResult),
+            new ChildWorkflowOptions { Id = $"{nameof(CriminalRecordWorkflow)}-{ssnResult}" }
+        );
+
+        await Task.WhenAll(trafficViolationResult, civilOffenceResult, criminalRecordResult);
+
+        return $"{await trafficViolationResult}-{await civilOffenceResult}-{await criminalRecordResult}";
     }
 }

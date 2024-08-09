@@ -20,6 +20,9 @@ using var worker = new TemporalWorker(
     new TemporalWorkerOptions(taskQueue: "EMPLOYEE_VERIFICATION_TASK_QUEUE")
         .AddAllActivities(activities) // Register activities
         .AddWorkflow<MainWorkflow>() // Register workflow
+        .AddWorkflow<TrafficViolationWorkflow>()
+        .AddWorkflow<CivilOffenceWorkflow>()
+        .AddWorkflow<CriminalRecordWorkflow>()
 );
 
 // Run the worker until it's cancelled
