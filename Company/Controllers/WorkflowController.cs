@@ -13,7 +13,7 @@ public class WorkflowController : ControllerBase
     }
 
     [HttpGet]
-    public async Task StartEmployeeVerificationWorkflowAsync(Guid governmentEmployeeId)
+    public async Task StartEmployeeVerificationWorkflowAsync(Guid employeeId)
     {
         var client = await TemporalClient.ConnectAsync(new("temporal:7233") { Namespace = "default" });
 
@@ -23,7 +23,7 @@ public class WorkflowController : ControllerBase
         {
             // Start the workflow
             var handle = await client.StartWorkflowAsync(
-                (MainWorkflow wf) => wf.VerifyEmployee(governmentEmployeeId),
+                (MainWorkflow wf) => wf.VerifyEmployee(employeeId),
                 new(id: workflowId, taskQueue: "EMPLOYEE_VERIFICATION_TASK_QUEUE"));
 
             Console.WriteLine($"Started Workflow {workflowId}");

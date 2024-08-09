@@ -12,6 +12,35 @@ public class WebApiService
     {
         _httpClient = new HttpClient();
     }
+    public async Task<Guid> GetGovernmentEmployeeId(Guid employeeId)
+    {
+        string endpoint = $"{CompanyServiceUrl}/api/Employee/{employeeId}";
+        HttpResponseMessage response = await _httpClient.GetAsync(endpoint);
+
+        if (response.IsSuccessStatusCode)
+        {
+            string guidString = await response.Content.ReadAsStringAsync();
+
+            // Trim any whitespace and remove any quotes
+            guidString = guidString.Trim().Trim('"');
+
+            if (Guid.TryParse(guidString, out Guid resultGuid))
+            {
+                Console.WriteLine($"Received GUID: {resultGuid}");
+                return resultGuid;
+            }
+            else
+            {
+                Console.WriteLine("The response is not a valid GUID.");
+                return Guid.Empty;
+            }
+        }
+        else
+        {
+            Console.WriteLine($"Request failed with status code: {response.StatusCode}");
+            return Guid.Empty;
+        }
+    }
 
     public async Task<Guid> GetSSN(Guid governmentDirectoryId)
     {

@@ -13,6 +13,12 @@ public class EmployeeActivities
     }
 
     [Activity]
+    public async Task<Guid> GetGovtEmployeeId(Guid employeeId)
+    {
+        return await _webApiService.GetGovernmentEmployeeId(employeeId);
+    }
+
+    [Activity]
     public async Task<Guid> GetSocialSecurityNumber(Guid governmentDirectoryId)
     {
         return await _webApiService.GetSSN(governmentDirectoryId);
