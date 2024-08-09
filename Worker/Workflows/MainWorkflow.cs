@@ -11,7 +11,7 @@ public class MainWorkflow
     }
 
     [WorkflowRun]
-    public async Task<string> VerifyEmployee(Guid governmentDirectoryId)
+    public async Task<string> VerifyEmployee(Guid employeeId)
     {
         var retryPolicy = new RetryPolicy
         {
@@ -20,12 +20,25 @@ public class MainWorkflow
             BackoffCoefficient = 2,
             MaximumAttempts = 500,
         };
+        
+        Guid govtIdResult;
+
+        govtIdResult = await Workflow.ExecuteActivityAsync(
+            (EmployeeActivities employeeActivities)
+            => employeeActivities.GetGovtEmployeeId(employeeId),
+            new ActivityOptions { StartToCloseTimeout = TimeSpan.FromMinutes(5), RetryPolicy = retryPolicy }
+        );
+
+        if (govtIdResult == Guid.Empty)
+        {
+            return "GovtID not found in CompanyDirectory";
+        }
 
         Guid ssnResult;
 
         ssnResult = await Workflow.ExecuteActivityAsync(
             (EmployeeActivities employeeActivities)
-            => employeeActivities.GetSocialSecurityNumber(governmentDirectoryId),
+            => employeeActivities.GetSocialSecurityNumber(govtIdResult),
             new ActivityOptions { StartToCloseTimeout = TimeSpan.FromMinutes(5), RetryPolicy = retryPolicy }
         );
 
