@@ -14,4 +14,8 @@
     <PackageReference Include="Temporalio.Extensions.Hosting" Version="1.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Worker\Worker.csproj" />
+  </ItemGroup>
+
 </Project>

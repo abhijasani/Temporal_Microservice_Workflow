@@ -1,15 +1,16 @@
-namespace Company.Services;
+namespace Worker.Services;
 
 public class WebApiService
 {
-    private const string GovernmentDirectoryServiceUrl = "http://localhost:5250";
-    private const string BackgroundCheckServiceUrl = "http://localhost:5042";
+    private const string GovernmentDirectoryServiceUrl = "http://localhost:5004";
+    private const string BackgroundCheckServiceUrl = "http://localhost:5003";
+    private const string CompanyServiceUrl = "http://localhost:5002";
 
     private readonly HttpClient _httpClient;
 
-    public WebApiService(IHttpClientFactory httpClientFactory)
+    public WebApiService()
     {
-        _httpClient = httpClientFactory.CreateClient();
+        _httpClient = new HttpClient();
     }
 
     public async Task<Guid> GetSSN(Guid governmentDirectoryId)
@@ -22,6 +23,9 @@ public class WebApiService
         if (response.IsSuccessStatusCode)
         {
             string guidString = await response.Content.ReadAsStringAsync();
+
+            // Trim any whitespace and remove any quotes
+            guidString = guidString.Trim().Trim('"');
 
             if (Guid.TryParse(guidString, out Guid resultGuid))
             {
