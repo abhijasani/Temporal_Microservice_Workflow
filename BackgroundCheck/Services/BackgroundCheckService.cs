@@ -43,6 +43,52 @@ public class BackgroundCheckService
             ];
     }
 
+
+    public bool? GetTrafficViolation(Guid SSN)
+    {
+        var backgroundCheckInformation = _backgroundCheckInformations.Find(e => e.SocialSecurityNumber == SSN);
+
+        if(backgroundCheckInformation != null)
+        {
+            return backgroundCheckInformation.TrafficViolation;
+        }
+
+        else
+        {
+            return null;
+        }
+    }
+
+    public bool? GetCivilOffences(Guid SSN)
+    {
+        var backgroundCheckInformation = _backgroundCheckInformations.Find(e => e.SocialSecurityNumber == SSN);
+
+        if(backgroundCheckInformation != null)
+        {
+            return backgroundCheckInformation.CivilOffences;
+        }
+
+        else
+        {
+            return null;
+        }
+    }
+
+    public bool? GetCriminalRecord(Guid SSN)
+    {
+        var backgroundCheckInformation = _backgroundCheckInformations.Find(e => e.SocialSecurityNumber == SSN);
+
+        if(backgroundCheckInformation != null)
+        {
+            return backgroundCheckInformation.CriminalRecordCheck;
+        }
+
+        else
+        {
+            return null;
+        }
+    }
+
     //returns null if not verified else returns emnployeeinformationdetails
     public BackgroundCheckInformationDTO? VerifyEmployee(Guid SSN)
     {

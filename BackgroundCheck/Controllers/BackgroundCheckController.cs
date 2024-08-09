@@ -26,4 +26,44 @@ public class BackgroundCheckController : ControllerBase
 
         return Ok(result);
     }
+
+    [HttpGet(nameof(GetTrafficViolation))]
+    public IActionResult GetTrafficViolation(Guid SocialSecurityNumber)
+    {
+        var result = _backgroundCheckService.GetTrafficViolation(SocialSecurityNumber);
+
+        if(result == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(result);
+    }
+
+    [HttpGet(nameof(GetCivilOffence))]
+    public IActionResult GetCivilOffence(Guid SocialSecurityNumber)
+    {
+        var result = _backgroundCheckService.GetCivilOffences(SocialSecurityNumber);
+
+        if(result == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(result);
+    }
+
+    [HttpGet(nameof(GetCriminalRecord))]
+    public IActionResult GetCriminalRecord(Guid SocialSecurityNumber)
+    {
+        var result = _backgroundCheckService.GetCriminalRecord(SocialSecurityNumber);
+
+        if(result == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(result);
+    }
+
 }
