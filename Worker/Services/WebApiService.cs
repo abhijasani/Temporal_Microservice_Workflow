@@ -2,6 +2,10 @@ namespace Worker.Services;
 
 public class WebApiService
 {
+    // private const string GovernmentDirectoryServiceUrl = "http://company-api:8080";
+    // private const string BackgroundCheckServiceUrl = "http://background-check-api:8080";
+    // private const string CompanyServiceUrl = "http://government-directory-api:8080";
+
     private const string GovernmentDirectoryServiceUrl = "http://localhost:5004";
     private const string BackgroundCheckServiceUrl = "http://localhost:5003";
     private const string CompanyServiceUrl = "http://localhost:5002";
